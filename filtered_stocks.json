@@ -1,0 +1,1512 @@
+[
+    {
+        "nepse_id": 2790,
+        "symbol": "ACLBSL",
+        "name": "Aarambha Chautari Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 397,
+        "symbol": "ADBL",
+        "name": "Agricultural Development Bank Limited"
+    },
+    {
+        "nepse_id": 9150,
+        "symbol": "AHL",
+        "name": "Asian Hydropower Limited"
+    },
+    {
+        "nepse_id": 360,
+        "symbol": "AHPC",
+        "name": "Arun Valley Hydropower Development Co. Ltd."
+    },
+    {
+        "nepse_id": 2788,
+        "symbol": "AKJCL",
+        "name": "Ankhu Khola Jalvidhyut Company Ltd"
+    },
+    {
+        "nepse_id": 2757,
+        "symbol": "AKPL",
+        "name": "Arun Kabeli Power Ltd."
+    },
+    {
+        "nepse_id": 2807,
+        "symbol": "ALBSL",
+        "name": "Asha Laghubitta Bittiya Sanstha Ltd"
+    },
+    {
+        "nepse_id": 385,
+        "symbol": "ALICL",
+        "name": "Asian Life Insurance Co. Limited"
+    },
+    {
+        "nepse_id": 9161,
+        "symbol": "ANLB",
+        "name": "Aatmanirbhar Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 9337,
+        "symbol": "APHL",
+        "name": "Appolo Hydropower Limited"
+    },
+    {
+        "nepse_id": 697,
+        "symbol": "API",
+        "name": "Api Power Company Ltd."
+    },
+    {
+        "nepse_id": 8117,
+        "symbol": "AVYAN",
+        "name": "Aviyan Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 9297,
+        "symbol": "BANDIPUR",
+        "name": "Bandipur Cablecar and Tourism Limited"
+    },
+    {
+        "nepse_id": 686,
+        "symbol": "BARUN",
+        "name": "Barun Hydropower Co. Ltd."
+    },
+    {
+        "nepse_id": 156,
+        "symbol": "BBC",
+        "name": "Bishal Bazar Company Limited"
+    },
+    {
+        "nepse_id": 9171,
+        "symbol": "BEDC",
+        "name": "Bhugol Energy Development Company Limited"
+    },
+    {
+        "nepse_id": 9356,
+        "symbol": "BENH",
+        "name": "Beni Hydropower Project Limited"
+    },
+    {
+        "nepse_id": 227,
+        "symbol": "BFC",
+        "name": "Best Finance Company Ltd."
+    },
+    {
+        "nepse_id": 9214,
+        "symbol": "BGWT",
+        "name": "Bhagawati Hydropower Development Company Limited"
+    },
+    {
+        "nepse_id": 9267,
+        "symbol": "BHCL",
+        "name": "Bikash Hydropower Company Limited"
+    },
+    {
+        "nepse_id": 8075,
+        "symbol": "BHDC",
+        "name": "Bindhyabasini Hydropower Development Company Limited"
+    },
+    {
+        "nepse_id": 8055,
+        "symbol": "BHL",
+        "name": "Balephi Hydropower Limited"
+    },
+    {
+        "nepse_id": 9135,
+        "symbol": "BHPL",
+        "name": "Barahi Hydropower Public Limited"
+    },
+    {
+        "nepse_id": 9322,
+        "symbol": "BJHL",
+        "name": "Bhujung Hydropower Limited"
+    },
+    {
+        "nepse_id": 8032,
+        "symbol": "BNHC",
+        "name": "Buddha Bhumi Nepal Hydropower Company Limited"
+    },
+    {
+        "nepse_id": 195,
+        "symbol": "BNL",
+        "name": "Bottlers Nepal (Balaju) Limited"
+    },
+    {
+        "nepse_id": 213,
+        "symbol": "BNT",
+        "name": "Bottlers Nepal (Terai) Limited"
+    },
+    {
+        "nepse_id": 153,
+        "symbol": "BPCL",
+        "name": "Butwal Power Company Limited"
+    },
+    {
+        "nepse_id": 9296,
+        "symbol": "BUNGAL",
+        "name": "Bungal Hydro Limited"
+    },
+    {
+        "nepse_id": 164,
+        "symbol": "CBBL",
+        "name": "Chhimek Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 245,
+        "symbol": "CFCL",
+        "name": "Central Finance Co. Ltd."
+    },
+    {
+        "nepse_id": 2917,
+        "symbol": "CGH",
+        "name": "Chandragiri Hills Limited"
+    },
+    {
+        "nepse_id": 154,
+        "symbol": "CHCL",
+        "name": "Chilime Hydropower Company Limited"
+    },
+    {
+        "nepse_id": 3946,
+        "symbol": "CHDC",
+        "name": "CEDB Holdings Limited"
+    },
+    {
+        "nepse_id": 2766,
+        "symbol": "CHL",
+        "name": "Chhyangdi Hydropower Ltd."
+    },
+    {
+        "nepse_id": 210,
+        "symbol": "CIT",
+        "name": "Citizen Investment Trust"
+    },
+    {
+        "nepse_id": 9173,
+        "symbol": "CITY",
+        "name": "City Hotel Limited"
+    },
+    {
+        "nepse_id": 9232,
+        "symbol": "CKHL",
+        "name": "Chirkhwa Hydropower Limited "
+    },
+    {
+        "nepse_id": 9209,
+        "symbol": "CLI",
+        "name": "Citizen Life Insurance Company Limited"
+    },
+    {
+        "nepse_id": 450,
+        "symbol": "CORBL",
+        "name": "Corporate Development Bank Limited"
+    },
+    {
+        "nepse_id": 9252,
+        "symbol": "CREST",
+        "name": "Crest Micro Life Insurance Limited"
+    },
+    {
+        "nepse_id": 9304,
+        "symbol": "CSY",
+        "name": "Citizens Santulit Yojana"
+    },
+    {
+        "nepse_id": 8065,
+        "symbol": "CYCL",
+        "name": "CYC Nepal Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 348,
+        "symbol": "CZBIL",
+        "name": "Citizens Bank International Limited"
+    },
+    {
+        "nepse_id": 166,
+        "symbol": "DDBL",
+        "name": "Deprosc Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 9293,
+        "symbol": "DHEL",
+        "name": "Daramkhola Hydro Energy Limited"
+    },
+    {
+        "nepse_id": 2754,
+        "symbol": "DHPL",
+        "name": "Dibyashwori Hydropower Ltd."
+    },
+    {
+        "nepse_id": 8123,
+        "symbol": "DLBS",
+        "name": "Dhaulagiri Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 9170,
+        "symbol": "DOLTI",
+        "name": "Dolti Power Company Limited"
+    },
+    {
+        "nepse_id": 8070,
+        "symbol": "DORDI",
+        "name": "Dordi Khola Jal Bidyut Company Limited"
+    },
+    {
+        "nepse_id": 137,
+        "symbol": "EBL",
+        "name": "Everest Bank Limited"
+    },
+    {
+        "nepse_id": 8044,
+        "symbol": "EBLD86",
+        "name": "Everest Bank Limited"
+    },
+    {
+        "nepse_id": 9347,
+        "symbol": "ECL",
+        "name": "Everest Colour Limited"
+    },
+    {
+        "nepse_id": 274,
+        "symbol": "EDBL",
+        "name": "Excel Development Bank Ltd."
+    },
+    {
+        "nepse_id": 8131,
+        "symbol": "EHPL",
+        "name": "Eastern Hydropower Limited"
+    },
+    {
+        "nepse_id": 8034,
+        "symbol": "ENL",
+        "name": "Emerging Nepal Limited"
+    },
+    {
+        "nepse_id": 490,
+        "symbol": "FMDBL",
+        "name": "First Micro Finance Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 2758,
+        "symbol": "FOWAD",
+        "name": "Forward Microfinance Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 417,
+        "symbol": "GBBL",
+        "name": "Garima Bikas Bank Limited"
+    },
+    {
+        "nepse_id": 341,
+        "symbol": "GBIME",
+        "name": "Global IME Bank Limited"
+    },
+    {
+        "nepse_id": 9269,
+        "symbol": "GBIMESY2",
+        "name": "Global IME Sammunat Yojana -2"
+    },
+    {
+        "nepse_id": 583,
+        "symbol": "GBLBS",
+        "name": "Grameen Bikas Laghubitta Bittiya Sanstha Ltd."
+    },
+    {
+        "nepse_id": 9193,
+        "symbol": "GCIL",
+        "name": "Ghorahi Cement Industry Limited"
+    },
+    {
+        "nepse_id": 232,
+        "symbol": "GFCL",
+        "name": "Goodwill Finance Limited"
+    },
+    {
+        "nepse_id": 2806,
+        "symbol": "GHL",
+        "name": "Ghalemdi Hydro Limited"
+    },
+    {
+        "nepse_id": 705,
+        "symbol": "GILB",
+        "name": "Global IME Laghubitta Bittiya Sanstha Ltd."
+    },
+    {
+        "nepse_id": 2826,
+        "symbol": "GLBSL",
+        "name": "Gurans Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 2924,
+        "symbol": "GLH",
+        "name": "GreenLife Hydropower Limited"
+    },
+    {
+        "nepse_id": 2815,
+        "symbol": "GMFBS",
+        "name": "Ganapati Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 263,
+        "symbol": "GMFIL",
+        "name": "Guheshowori Merchant Bank & Finance Co. Ltd."
+    },
+    {
+        "nepse_id": 9246,
+        "symbol": "GMLI",
+        "name": "Guardian Micro Life Insurance Limited "
+    },
+    {
+        "nepse_id": 2744,
+        "symbol": "GRDBL",
+        "name": "Green Development Bank Ltd."
+    },
+    {
+        "nepse_id": 9248,
+        "symbol": "GSY",
+        "name": "Garima Samriddhi Yojana"
+    },
+    {
+        "nepse_id": 204,
+        "symbol": "GUFL",
+        "name": "Gurkhas Finance Ltd."
+    },
+    {
+        "nepse_id": 8045,
+        "symbol": "GVL",
+        "name": "Green Ventures Limited"
+    },
+    {
+        "nepse_id": 9221,
+        "symbol": "H8020",
+        "name": "Himalayan 80-20"
+    },
+    {
+        "nepse_id": 9213,
+        "symbol": "HATHY",
+        "name": "Hathway Investment Nepal Limited"
+    },
+    {
+        "nepse_id": 134,
+        "symbol": "HBL",
+        "name": "Himalayan Bank Limited"
+    },
+    {
+        "nepse_id": 2880,
+        "symbol": "HDHPC",
+        "name": "Himal Dolakha Hydropower Company Limited"
+    },
+    {
+        "nepse_id": 235,
+        "symbol": "HDL",
+        "name": "Himalayan Distillery Limited"
+    },
+    {
+        "nepse_id": 179,
+        "symbol": "HEI",
+        "name": "Himalayan Everest Insurance Limited"
+    },
+    {
+        "nepse_id": 9308,
+        "symbol": "HFIN",
+        "name": "Hotel Forest Inn Limited"
+    },
+    {
+        "nepse_id": 8076,
+        "symbol": "HHL",
+        "name": "Himalayan Hydropower Limited"
+    },
+    {
+        "nepse_id": 2742,
+        "symbol": "HIDCL",
+        "name": "Hydorelectricity Investment and Development Company Ltd"
+    },
+    {
+        "nepse_id": 9270,
+        "symbol": "HIMSTAR",
+        "name": "Him Star Urja Company Limited"
+    },
+    {
+        "nepse_id": 693,
+        "symbol": "HLBSL",
+        "name": "Himalayan Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 393,
+        "symbol": "HLI",
+        "name": "Himalayan Life Insurance Limited"
+    },
+    {
+        "nepse_id": 2767,
+        "symbol": "HPPL",
+        "name": "Himalayan Power Partner Ltd."
+    },
+    {
+        "nepse_id": 9234,
+        "symbol": "HRL",
+        "name": "Himalayan Reinsurance Limited"
+    },
+    {
+        "nepse_id": 2824,
+        "symbol": "HURJA",
+        "name": "Himalaya Urja Bikas Company Limited"
+    },
+    {
+        "nepse_id": 273,
+        "symbol": "ICFC",
+        "name": "ICFC Finance Limited"
+    },
+    {
+        "nepse_id": 400,
+        "symbol": "ICFCPO",
+        "name": "ICFC Finance Limited Promotor Share"
+    },
+    {
+        "nepse_id": 186,
+        "symbol": "IGI",
+        "name": "IGI Prudential insurance Limited"
+    },
+    {
+        "nepse_id": 9176,
+        "symbol": "IHL",
+        "name": "Ingwa Hydropower Limited"
+    },
+    {
+        "nepse_id": 2832,
+        "symbol": "ILBS",
+        "name": "Infinity Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 9184,
+        "symbol": "ILI",
+        "name": "IME Life Insurance Company Limited"
+    },
+    {
+        "nepse_id": 418,
+        "symbol": "JBBL",
+        "name": "Jyoti Bikas Bank Limited"
+    },
+    {
+        "nepse_id": 4951,
+        "symbol": "JBLB",
+        "name": "Jeevan Bikas Laghubitta  Bittya Sanstha Ltd"
+    },
+    {
+        "nepse_id": 250,
+        "symbol": "JFL",
+        "name": "Janaki Finance Company Limited"
+    },
+    {
+        "nepse_id": 9300,
+        "symbol": "JHAPA",
+        "name": "Jhapa Energy Limited"
+    },
+    {
+        "nepse_id": 2789,
+        "symbol": "JOSHI",
+        "name": "Joshi Hydropower Development Company Ltd"
+    },
+    {
+        "nepse_id": 695,
+        "symbol": "JSLBB",
+        "name": "Janautthan Samudayic Laghubitta Bittya Sanstha Limited"
+    },
+    {
+        "nepse_id": 9346,
+        "symbol": "KAHL",
+        "name": "Kalanga Hydro Limited"
+    },
+    {
+        "nepse_id": 142,
+        "symbol": "KBL",
+        "name": "Kumari Bank Limited"
+    },
+    {
+        "nepse_id": 283,
+        "symbol": "KBLPO",
+        "name": "Kumari Bank Limited Promotor Share"
+    },
+    {
+        "nepse_id": 9196,
+        "symbol": "KBSH",
+        "name": "Kutheli Bukhari Small Hydropower Limited"
+    },
+    {
+        "nepse_id": 8074,
+        "symbol": "KDBY",
+        "name": "Kumari Dhanabriddhi Yojana"
+    },
+    {
+        "nepse_id": 9151,
+        "symbol": "KDL",
+        "name": "Kalinchowk Darshan Limited"
+    },
+    {
+        "nepse_id": 9334,
+        "symbol": "KHPL",
+        "name": "Kalinchock Hydropower Limited"
+    },
+    {
+        "nepse_id": 2751,
+        "symbol": "KKHC",
+        "name": "Khanikhola Hydropower Co. Ltd."
+    },
+    {
+        "nepse_id": 593,
+        "symbol": "KMCDB",
+        "name": "Kalika Laghubitta Bittiya Sanstha Ltd"
+    },
+    {
+        "nepse_id": 2787,
+        "symbol": "KPCL",
+        "name": "Kalika power Company Ltd"
+    },
+    {
+        "nepse_id": 459,
+        "symbol": "KSBBL",
+        "name": "Kamana Sewa Bikas Bank Limited"
+    },
+    {
+        "nepse_id": 9241,
+        "symbol": "KSY",
+        "name": "Kumari Sabal Yojana"
+    },
+    {
+        "nepse_id": 358,
+        "symbol": "LBBL",
+        "name": "Lumbini Bikas Bank Ltd."
+    },
+    {
+        "nepse_id": 2903,
+        "symbol": "LEC",
+        "name": "Liberty Energy Company Limited"
+    },
+    {
+        "nepse_id": 188,
+        "symbol": "LICN",
+        "name": "Life Insurance Corporation (Nepal) Limited"
+    },
+    {
+        "nepse_id": 618,
+        "symbol": "LLBS",
+        "name": "Laxmi Laghubitta Bittiya Sanstha Ltd."
+    },
+    {
+        "nepse_id": 9350,
+        "symbol": "LSH12",
+        "name": "LS Horizon 12"
+    },
+    {
+        "nepse_id": 141,
+        "symbol": "LSL",
+        "name": "Laxmi Sunrise Bank Limited"
+    },
+    {
+        "nepse_id": 2902,
+        "symbol": "LUK",
+        "name": "Laxmi Unnati Kosh"
+    },
+    {
+        "nepse_id": 9287,
+        "symbol": "MABEL",
+        "name": "Mabilung Energy Limited"
+    },
+    {
+        "nepse_id": 9166,
+        "symbol": "MAKAR",
+        "name": "Makar Jitumaya Suri Hydropower Limited"
+    },
+    {
+        "nepse_id": 9212,
+        "symbol": "MANDU",
+        "name": "Mandu Hydropower Limited"
+    },
+    {
+        "nepse_id": 694,
+        "symbol": "MATRI",
+        "name": "Matribhumi Lagubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 8031,
+        "symbol": "MBJC",
+        "name": "Madhya Bhotekoshi Jalavidyut Company Limited"
+    },
+    {
+        "nepse_id": 140,
+        "symbol": "MBL",
+        "name": "Machhapuchhre Bank Limited"
+    },
+    {
+        "nepse_id": 281,
+        "symbol": "MBLPO",
+        "name": "MachhaPuchhre  Bank Limited Promotor Share"
+    },
+    {
+        "nepse_id": 9175,
+        "symbol": "MCHL",
+        "name": "Menchhiyam Hydropower Limited"
+    },
+    {
+        "nepse_id": 371,
+        "symbol": "MDB",
+        "name": "Miteri Development Bank Limited"
+    },
+    {
+        "nepse_id": 9203,
+        "symbol": "MEHL",
+        "name": "Manakamana Engineering Hydropower Limited"
+    },
+    {
+        "nepse_id": 9179,
+        "symbol": "MEL",
+        "name": "Modi Energy Limited"
+    },
+    {
+        "nepse_id": 2913,
+        "symbol": "MEN",
+        "name": "Mountain Energy Nepal Limited"
+    },
+    {
+        "nepse_id": 9352,
+        "symbol": "MEPDL",
+        "name": "Mount Everest Power Development Limited"
+    },
+    {
+        "nepse_id": 1741,
+        "symbol": "MERO",
+        "name": "Mero Microfinance Bittiya Sanstha Ltd."
+    },
+    {
+        "nepse_id": 516,
+        "symbol": "MFIL",
+        "name": "Manjushree Finance Ltd."
+    },
+    {
+        "nepse_id": 9158,
+        "symbol": "MHCL",
+        "name": "Molung Hydropower Company Limited"
+    },
+    {
+        "nepse_id": 8102,
+        "symbol": "MHL",
+        "name": "Mandakini Hydropower Limited"
+    },
+    {
+        "nepse_id": 2811,
+        "symbol": "MHNL",
+        "name": "Mountain Hydro Nepal Limited"
+    },
+    {
+        "nepse_id": 9230,
+        "symbol": "MKCL",
+        "name": "Muktinath Krishi Company Limited"
+    },
+    {
+        "nepse_id": 9149,
+        "symbol": "MKHC",
+        "name": "Maya Khola Hydropower Company Limited"
+    },
+    {
+        "nepse_id": 9167,
+        "symbol": "MKHL",
+        "name": "Mai Khola Hydropower Limited"
+    },
+    {
+        "nepse_id": 8005,
+        "symbol": "MKJC",
+        "name": "Mailung Khola Jal Vidhyut Company Limited"
+    },
+    {
+        "nepse_id": 601,
+        "symbol": "MLBBL",
+        "name": "Mithila LaghuBitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 401,
+        "symbol": "MLBL",
+        "name": "Mahalaxmi Bikas Bank Ltd."
+    },
+    {
+        "nepse_id": 620,
+        "symbol": "MLBLPO",
+        "name": "Mahalxmi Bikas Bank Ltd. Promotor Share"
+    },
+    {
+        "nepse_id": 8018,
+        "symbol": "MLBS",
+        "name": "Manushi Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 2925,
+        "symbol": "MLBSL",
+        "name": "Mahila Lagubitta Bittiya Sanstha Limited "
+    },
+    {
+        "nepse_id": 9217,
+        "symbol": "MMKJL",
+        "name": "Mathillo Mailun Khola Jalvidhyut Limited"
+    },
+    {
+        "nepse_id": 474,
+        "symbol": "MNBBL",
+        "name": "Muktinath Bikas Bank Ltd."
+    },
+    {
+        "nepse_id": 471,
+        "symbol": "MPFL",
+        "name": "Multipurpose Finance Company  Limited"
+    },
+    {
+        "nepse_id": 9215,
+        "symbol": "MSHL",
+        "name": "Mid Solu Hydropower Limited"
+    },
+    {
+        "nepse_id": 2768,
+        "symbol": "MSLB",
+        "name": "Mahuli Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 172,
+        "symbol": "NABBC",
+        "name": "Narayani Development Bank Limited"
+    },
+    {
+        "nepse_id": 131,
+        "symbol": "NABIL",
+        "name": "Nabil Bank Limited"
+    },
+    {
+        "nepse_id": 517,
+        "symbol": "NBL",
+        "name": "Nepal Bank Limited"
+    },
+    {
+        "nepse_id": 8041,
+        "symbol": "NESDO",
+        "name": "NESDO Sambridha Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 194,
+        "symbol": "NFS",
+        "name": "Nepal Finance Ltd."
+    },
+    {
+        "nepse_id": 2743,
+        "symbol": "NGPL",
+        "name": "Ngadi Group Power Ltd."
+    },
+    {
+        "nepse_id": 2769,
+        "symbol": "NHDL",
+        "name": "Nepal Hydro Developers Ltd."
+    },
+    {
+        "nepse_id": 152,
+        "symbol": "NHPC",
+        "name": "National Hydro Power Company Limited"
+    },
+    {
+        "nepse_id": 139,
+        "symbol": "NICA",
+        "name": "NIC Asia Bank Ltd."
+    },
+    {
+        "nepse_id": 7986,
+        "symbol": "NICD88",
+        "name": "NIC ASIA Rinpatra 2088"
+    },
+    {
+        "nepse_id": 176,
+        "symbol": "NICL",
+        "name": "Nepal Insurance Co. Ltd."
+    },
+    {
+        "nepse_id": 2887,
+        "symbol": "NICLBSL",
+        "name": "NIC ASIA Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 2919,
+        "symbol": "NIFRA",
+        "name": "Nepal Infrastructure Bank Limited"
+    },
+    {
+        "nepse_id": 9141,
+        "symbol": "NIFRAUR85/86",
+        "name": "NIFRA Uraj Rinpatra7%-2085/86"
+    },
+    {
+        "nepse_id": 183,
+        "symbol": "NIL",
+        "name": "Neco Insurance Limited"
+    },
+    {
+        "nepse_id": 132,
+        "symbol": "NIMB",
+        "name": "Nepal Investment Mega Bank Limited"
+    },
+    {
+        "nepse_id": 559,
+        "symbol": "NLG",
+        "name": "NLG Insurance Company Ltd."
+    },
+    {
+        "nepse_id": 187,
+        "symbol": "NLIC",
+        "name": "Nepal Life Insurance Co. Ltd."
+    },
+    {
+        "nepse_id": 178,
+        "symbol": "NLICL",
+        "name": "National Life Insurance Co. Ltd."
+    },
+    {
+        "nepse_id": 198,
+        "symbol": "NLO",
+        "name": "Nepal Lube Oil Limited"
+    },
+    {
+        "nepse_id": 238,
+        "symbol": "NMB",
+        "name": "NMB Bank Limited"
+    },
+    {
+        "nepse_id": 704,
+        "symbol": "NMBMF",
+        "name": "NMB  Microfinance Bittiya Sanstha Ltd."
+    },
+    {
+        "nepse_id": 2746,
+        "symbol": "NMFBS",
+        "name": "National Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 9250,
+        "symbol": "NMIC",
+        "name": "Nepal Micro Insurance Company Limited"
+    },
+    {
+        "nepse_id": 396,
+        "symbol": "NMLBBL",
+        "name": "Nerude Mirmire Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 2881,
+        "symbol": "NRIC",
+        "name": "Nepal Reinsurance Company Limited"
+    },
+    {
+        "nepse_id": 9183,
+        "symbol": "NRM",
+        "name": "Nepal Republic Media Limited"
+    },
+    {
+        "nepse_id": 2898,
+        "symbol": "NRN",
+        "name": "NRN Infrastructure and Development Limited"
+    },
+    {
+        "nepse_id": 9312,
+        "symbol": "NSY",
+        "name": "Nepal Life Samriddhi Lagani Yojana"
+    },
+    {
+        "nepse_id": 307,
+        "symbol": "NTC",
+        "name": "Nepal Doorsanchar Company Limited"
+    },
+    {
+        "nepse_id": 163,
+        "symbol": "NUBL",
+        "name": "Nirdhan Utthan Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 9233,
+        "symbol": "NWCL",
+        "name": "Nepal Warehousing Company Limited "
+    },
+    {
+        "nepse_id": 8026,
+        "symbol": "NYADI",
+        "name": "Nyadi Hydropower Limited"
+    },
+    {
+        "nepse_id": 149,
+        "symbol": "OHL",
+        "name": "Oriental Hotels Limited"
+    },
+    {
+        "nepse_id": 9256,
+        "symbol": "OMPL",
+        "name": "Om Megashree Pharmaceuticals Limited"
+    },
+    {
+        "nepse_id": 357,
+        "symbol": "PCBL",
+        "name": "Prime Commercial Bank Ltd."
+    },
+    {
+        "nepse_id": 9330,
+        "symbol": "PCIL",
+        "name": "Palpa Cement Industries Limited"
+    },
+    {
+        "nepse_id": 236,
+        "symbol": "PFL",
+        "name": "Pokhara Finance Ltd."
+    },
+    {
+        "nepse_id": 8133,
+        "symbol": "PHCL",
+        "name": "Peoples Hydropower Company Limited"
+    },
+    {
+        "nepse_id": 2786,
+        "symbol": "PMHPL",
+        "name": "Panchakanya Mai Hydropower Ltd"
+    },
+    {
+        "nepse_id": 2915,
+        "symbol": "PMLI",
+        "name": "Prabhu Mahalaxmi Life Insurance Limited"
+    },
+    {
+        "nepse_id": 2813,
+        "symbol": "PPCL",
+        "name": "Panchthar Power Compant Limited"
+    },
+    {
+        "nepse_id": 8122,
+        "symbol": "PPL",
+        "name": "People's Power Limited"
+    },
+    {
+        "nepse_id": 184,
+        "symbol": "PRIN",
+        "name": "Prabhu Insurance Ltd."
+    },
+    {
+        "nepse_id": 338,
+        "symbol": "PROFL",
+        "name": "Progressive Finance Limited"
+    },
+    {
+        "nepse_id": 255,
+        "symbol": "PRVU",
+        "name": "Prabhu  Bank Limited"
+    },
+    {
+        "nepse_id": 9258,
+        "symbol": "PURE",
+        "name": "Pure Energy Limited"
+    },
+    {
+        "nepse_id": 2776,
+        "symbol": "RADHI",
+        "name": "Radhi Bidyut Company Ltd"
+    },
+    {
+        "nepse_id": 9181,
+        "symbol": "RAWA",
+        "name": "Rawa Energy Development Limited"
+    },
+    {
+        "nepse_id": 9302,
+        "symbol": "RBBF40",
+        "name": "RBB Focus 40"
+    },
+    {
+        "nepse_id": 177,
+        "symbol": "RBCL",
+        "name": "Rastriya Beema Company Limited"
+    },
+    {
+        "nepse_id": 8066,
+        "symbol": "RFPL",
+        "name": "River Falls Power Limited"
+    },
+    {
+        "nepse_id": 8108,
+        "symbol": "RHGCL",
+        "name": "Rapti Hydro And General Construction Limited"
+    },
+    {
+        "nepse_id": 2841,
+        "symbol": "RHPL",
+        "name": "RASUWAGADHI HYDROPOWER COMPANY LIMITED"
+    },
+    {
+        "nepse_id": 610,
+        "symbol": "RIDI",
+        "name": "Ridi Power Company Limited"
+    },
+    {
+        "nepse_id": 9324,
+        "symbol": "RLEL",
+        "name": "Ridge Line Energy Limited"
+    },
+    {
+        "nepse_id": 587,
+        "symbol": "RLFL",
+        "name": "Reliance Finance Ltd."
+    },
+    {
+        "nepse_id": 9199,
+        "symbol": "RNLI",
+        "name": "Reliable Nepal Life Insurance Limited"
+    },
+    {
+        "nepse_id": 2748,
+        "symbol": "RSDC",
+        "name": "RSDC Laghubitta Bittiya Sanstha Ltd."
+    },
+    {
+        "nepse_id": 9306,
+        "symbol": "RSML",
+        "name": "Reliance Spinning Mills Limited"
+    },
+    {
+        "nepse_id": 9259,
+        "symbol": "RSY",
+        "name": "Reliable Samriddhi Yojana"
+    },
+    {
+        "nepse_id": 9351,
+        "symbol": "RSY2",
+        "name": "Reliable Samriddhi Yojana -2"
+    },
+    {
+        "nepse_id": 2935,
+        "symbol": "RURU",
+        "name": "Ru Ru Jalbidhyut Pariyojana Limited"
+    },
+    {
+        "nepse_id": 9305,
+        "symbol": "SABBL",
+        "name": "Salapa Bikas Bank Limited"
+    },
+    {
+        "nepse_id": 472,
+        "symbol": "SADBL",
+        "name": "Shangrila Development Bank Ltd."
+    },
+    {
+        "nepse_id": 9294,
+        "symbol": "SAGAR",
+        "name": "Sagar Distillery Limited"
+    },
+    {
+        "nepse_id": 8021,
+        "symbol": "SAHAS",
+        "name": "Sahas Urja Limited"
+    },
+    {
+        "nepse_id": 9301,
+        "symbol": "SAIL",
+        "name": "Shreenagar Agritech Industries Limited"
+    },
+    {
+        "nepse_id": 185,
+        "symbol": "SALICO",
+        "name": "Sagarmatha Lumbini Insurance Co. Limited"
+    },
+    {
+        "nepse_id": 171,
+        "symbol": "SANIMA",
+        "name": "Sanima Bank Limited"
+    },
+    {
+        "nepse_id": 9263,
+        "symbol": "SANVI",
+        "name": "Sanvi Energy Limited"
+    },
+    {
+        "nepse_id": 2860,
+        "symbol": "SAPDBL",
+        "name": "Saptakoshi Development Bank Ltd"
+    },
+    {
+        "nepse_id": 9353,
+        "symbol": "SAPIL",
+        "name": "Sarvottam Paints Industries Limited"
+    },
+    {
+        "nepse_id": 9242,
+        "symbol": "SARBTM",
+        "name": "Sarbottam Cement Limited"
+    },
+    {
+        "nepse_id": 135,
+        "symbol": "SBI",
+        "name": "Nepal SBI Bank Limited"
+    },
+    {
+        "nepse_id": 9211,
+        "symbol": "SBID89",
+        "name": "9% Nepal SBI Bank Rinpatra 2089"
+    },
+    {
+        "nepse_id": 145,
+        "symbol": "SBL",
+        "name": "Siddhartha Bank Limited"
+    },
+    {
+        "nepse_id": 133,
+        "symbol": "SCB",
+        "name": "Standard Chartered Bank Limited"
+    },
+    {
+        "nepse_id": 8100,
+        "symbol": "SGHC",
+        "name": "Swet-Ganga Hydropower & Construction Limited "
+    },
+    {
+        "nepse_id": 9345,
+        "symbol": "SGHL",
+        "name": "Sanigad Hydro Limited"
+    },
+    {
+        "nepse_id": 2908,
+        "symbol": "SGIC",
+        "name": "Sanima GIC Insurance Limited"
+    },
+    {
+        "nepse_id": 2934,
+        "symbol": "SHEL",
+        "name": "Singati Hydro Energy Limited"
+    },
+    {
+        "nepse_id": 473,
+        "symbol": "SHINE",
+        "name": "Shine Resunga Development Bank Ltd."
+    },
+    {
+        "nepse_id": 2809,
+        "symbol": "SHIVM",
+        "name": "SHIVAM CEMENTS LTD"
+    },
+    {
+        "nepse_id": 147,
+        "symbol": "SHL",
+        "name": "Soaltee Hotel Limited"
+    },
+    {
+        "nepse_id": 8132,
+        "symbol": "SHLB",
+        "name": "Shrijanshil Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 591,
+        "symbol": "SHPC",
+        "name": "Sanima Mai Hydropower Ltd."
+    },
+    {
+        "nepse_id": 192,
+        "symbol": "SICL",
+        "name": "Shikhar Insurance Co. Ltd."
+    },
+    {
+        "nepse_id": 244,
+        "symbol": "SIFC",
+        "name": "Shree Investment Finance Co. Ltd."
+    },
+    {
+        "nepse_id": 2859,
+        "symbol": "SIGS2",
+        "name": "Siddhartha Investment Growth Scheme - 2"
+    },
+    {
+        "nepse_id": 9182,
+        "symbol": "SIGS3",
+        "name": "Siddhartha Investment Growth Scheme 3"
+    },
+    {
+        "nepse_id": 8126,
+        "symbol": "SIKLES",
+        "name": "Sikles Hydropower Limited"
+    },
+    {
+        "nepse_id": 561,
+        "symbol": "SINDU",
+        "name": "Sindhu Bikash Bank Ltd"
+    },
+    {
+        "nepse_id": 9329,
+        "symbol": "SIPD",
+        "name": "Shikhar power Development Limited"
+    },
+    {
+        "nepse_id": 2842,
+        "symbol": "SJCL",
+        "name": "SANJEN JALAVIDHYUT COMPANY LIMITED"
+    },
+    {
+        "nepse_id": 403,
+        "symbol": "SJLIC",
+        "name": "SuryaJyoti Life Insurance Company Limited"
+    },
+    {
+        "nepse_id": 574,
+        "symbol": "SKBBL",
+        "name": "Sana Kisan Bikas Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 9325,
+        "symbol": "SKHEL",
+        "name": "Suryakunda Hydro Electric Limited"
+    },
+    {
+        "nepse_id": 9323,
+        "symbol": "SKHL",
+        "name": "Super Khudi Hydropower Limited"
+    },
+    {
+        "nepse_id": 545,
+        "symbol": "SLBBL",
+        "name": "Swarojgar Laghubitta Bittiya Sanstha Ltd."
+    },
+    {
+        "nepse_id": 2804,
+        "symbol": "SLBSL",
+        "name": "Samudayik Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 2761,
+        "symbol": "SMATA",
+        "name": "Samata Gharelu Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 2771,
+        "symbol": "SMB",
+        "name": "Support Microfinance Bittiya Sanstha Ltd."
+    },
+    {
+        "nepse_id": 2829,
+        "symbol": "SMFBS",
+        "name": "Swabhimaan Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 9148,
+        "symbol": "SMH",
+        "name": "Super Mai Hydropower Limited"
+    },
+    {
+        "nepse_id": 9146,
+        "symbol": "SMHL",
+        "name": "Super Madi Hydropower Limited"
+    },
+    {
+        "nepse_id": 9159,
+        "symbol": "SMJC",
+        "name": "Sagarmatha Jalabidhyut Company Limited"
+    },
+    {
+        "nepse_id": 2896,
+        "symbol": "SMPDA",
+        "name": "Sampada Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 9201,
+        "symbol": "SNLI",
+        "name": "Sun Nepal Life Insurance Company Limited"
+    },
+    {
+        "nepse_id": 9344,
+        "symbol": "SNORL",
+        "name": "Snow Rivers Limited"
+    },
+    {
+        "nepse_id": 9311,
+        "symbol": "SOHL",
+        "name": "Solu Hydropower Limited"
+    },
+    {
+        "nepse_id": 9216,
+        "symbol": "SONA",
+        "name": "Sonapur Minerals And Oil Limited"
+    },
+    {
+        "nepse_id": 9336,
+        "symbol": "SOPL",
+        "name": "Sopan Pharmaceuticals Limited"
+    },
+    {
+        "nepse_id": 8025,
+        "symbol": "SPC",
+        "name": "Samling Power Company Limited"
+    },
+    {
+        "nepse_id": 2759,
+        "symbol": "SPDL",
+        "name": "Synergy Power Development Ltd."
+    },
+    {
+        "nepse_id": 8121,
+        "symbol": "SPHL",
+        "name": "Sayapatri Hydropower Limited"
+    },
+    {
+        "nepse_id": 182,
+        "symbol": "SPIL",
+        "name": "Siddhartha Premier Insurance Limited"
+    },
+    {
+        "nepse_id": 9147,
+        "symbol": "SPL",
+        "name": "Shuvam Power Limited"
+    },
+    {
+        "nepse_id": 5982,
+        "symbol": "SRLI",
+        "name": "Sanima Reliance Life Insurance Limited"
+    },
+    {
+        "nepse_id": 2907,
+        "symbol": "SSHL",
+        "name": "Shiva Shree Hydropower Ltd"
+    },
+    {
+        "nepse_id": 155,
+        "symbol": "STC",
+        "name": "Salt Trading Corporation"
+    },
+    {
+        "nepse_id": 9295,
+        "symbol": "SWASTIK",
+        "name": "Swastik Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 268,
+        "symbol": "SWBBL",
+        "name": "Swabalamban Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 706,
+        "symbol": "SWMF",
+        "name": "Suryodaya Womi Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 9303,
+        "symbol": "SYPNL",
+        "name": "SY Panel Nepal Limited"
+    },
+    {
+        "nepse_id": 9156,
+        "symbol": "TAMOR",
+        "name": "Sanima Middle Tamor Hydropower Limited"
+    },
+    {
+        "nepse_id": 8022,
+        "symbol": "TPC",
+        "name": "Terhathum Power Company Limited"
+    },
+    {
+        "nepse_id": 9343,
+        "symbol": "TPKHL",
+        "name": "Taksar Pikhuwa Khola Hydropower Limited"
+    },
+    {
+        "nepse_id": 148,
+        "symbol": "TRH",
+        "name": "Taragaon Regency Hotel Limited"
+    },
+    {
+        "nepse_id": 9194,
+        "symbol": "TSHL",
+        "name": "Three Star Hydropower Limited"
+    },
+    {
+        "nepse_id": 9262,
+        "symbol": "TTL",
+        "name": "Trade Tower Limited"
+    },
+    {
+        "nepse_id": 9218,
+        "symbol": "TVCL",
+        "name": "Trishuli Jal Vidhyut Company Limited "
+    },
+    {
+        "nepse_id": 180,
+        "symbol": "UAIL",
+        "name": "United Ajod Insurance Limited"
+    },
+    {
+        "nepse_id": 8099,
+        "symbol": "UHEWA",
+        "name": "Upper Hewakhola Hydropower Company Limited"
+    },
+    {
+        "nepse_id": 8063,
+        "symbol": "ULBSL",
+        "name": "Upakar Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 9208,
+        "symbol": "ULHC",
+        "name": "Upper Lohore Khola Hydropower Company Limited"
+    },
+    {
+        "nepse_id": 2760,
+        "symbol": "UMHL",
+        "name": "United Modi Hydropower Ltd."
+    },
+    {
+        "nepse_id": 2914,
+        "symbol": "UMRH",
+        "name": "United IDI Mardi RB Hydropower Limited."
+    },
+    {
+        "nepse_id": 2831,
+        "symbol": "UNHPL",
+        "name": "Union Hydropower Limited"
+    },
+    {
+        "nepse_id": 219,
+        "symbol": "UNL",
+        "name": "Unilever Nepal Limited"
+    },
+    {
+        "nepse_id": 9140,
+        "symbol": "UNLB",
+        "name": "Unique Nepal Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 2810,
+        "symbol": "UPCL",
+        "name": "UNIVERSAL POWER COMPANY LTD"
+    },
+    {
+        "nepse_id": 2792,
+        "symbol": "UPPER",
+        "name": "Upper Tamakoshi Hydropower Ltd"
+    },
+    {
+        "nepse_id": 8104,
+        "symbol": "USHEC",
+        "name": "Upper Solu Hydro Electric Company Limited"
+    },
+    {
+        "nepse_id": 9192,
+        "symbol": "USHL",
+        "name": "Upper Syange Hydropower Limited"
+    },
+    {
+        "nepse_id": 2774,
+        "symbol": "USLB",
+        "name": "Unnati Sahakarya Laghubitta Bittiya Sanstha Limited"
+    },
+    {
+        "nepse_id": 687,
+        "symbol": "VLBS",
+        "name": "Vijaya laghubitta Bittiya Sanstha Ltd."
+    },
+    {
+        "nepse_id": 9225,
+        "symbol": "VLUCL",
+        "name": "Vision Lumbini Urja Company Limited "
+    },
+    {
+        "nepse_id": 9342,
+        "symbol": "YMHL",
+        "name": "Yambaling Hydropower Limited"
+    }
+]
