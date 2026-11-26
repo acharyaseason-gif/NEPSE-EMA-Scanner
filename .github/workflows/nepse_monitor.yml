@@ -37,4 +37,10 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python -u cloud_scanner.py
+      run: |
+  echo "STEP 1: Python is starting"
+  python -u -c "print('STEP 2: Python works', flush=True)"
+  echo "STEP 3: Testing imports"
+  python -u -c "import pandas; print('pandas OK', flush=True); import requests; print('requests OK', flush=True); import nepsepy; print('nepsepy OK', flush=True)"
+  echo "STEP 4: Starting scanner"
+  python -u cloud_scanner.py
