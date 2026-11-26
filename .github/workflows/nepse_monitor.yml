@@ -1,6 +1,6 @@
 name: NEPSE EMA Monitor
 
-on:
+'on':
   workflow_dispatch:
   schedule:
     - cron: "15 5 * * 1-5"
