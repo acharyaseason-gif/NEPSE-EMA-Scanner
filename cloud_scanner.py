@@ -15,18 +15,15 @@ from nepsepy import NepseClient
 # ============================================================
 
 TZ = ZoneInfo("Asia/Kathmandu")
-
 MARKET_START = dt_time(11, 0)
 MARKET_END = dt_time(15, 0)
 
 EMA_SHORT = 7
 EMA_LONG = 21
-
 HISTORY_SIZE = 100
 SCAN_INTERVAL = 300
 
 BASE_DIR = Path(__file__).resolve().parent
-
 STOCK_FILE = BASE_DIR / "filtered_stocks.json"
 
 BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
@@ -36,28 +33,19 @@ PRICE_DEBUG_PRINTED = False
 
 
 # ============================================================
-# TIME FUNCTIONS
+# TIME HELPERS
 # ============================================================
 
 def now_nepal():
     return datetime.now(TZ)
 
 
-def is_weekday():
-    return now_nepal().weekday() < 5
-
-
-def is_market_open():
-    current_time = now_nepal().time()
-
-    return (
-        is_weekday()
-        and MARKET_START <= current_time <= MARKET_END
-    )
-
-
 def print_time():
     return now_nepal().strftime("%Y-%m-%d %H:%M:%S")
+
+
+def is_weekday():
+    return now_nepal().weekday() < 5
 
 
 # ============================================================
@@ -65,32 +53,21 @@ def print_time():
 # ============================================================
 
 def load_candidates():
-
     if not STOCK_FILE.exists():
-        raise FileNotFoundError(
-            f"Stock file not found: {STOCK_FILE}"
-        )
+        raise FileNotFoundError(f"Stock file not found: {STOCK_FILE}")
 
-    with open(STOCK_FILE, "r", encoding="utf-8") as file:
-        data = json.load(file)
+    with open(STOCK_FILE, "r", encoding="utf-8") as f:
+        data = json.load(f)
 
     if isinstance(data, dict):
-
-        if "stocks" in data:
-            data = data["stocks"]
-
-        elif "data" in data:
-            data = data["data"]
+        data = data.get("stocks", data.get("data", data))
 
     if not isinstance(data, list):
-        raise ValueError(
-            "filtered_stocks.json must contain a list of stocks."
-        )
+        raise ValueError("filtered_stocks.json must contain a list of stocks")
 
-    candidates = []
+    unique = {}
 
     for record in data:
-
         if not isinstance(record, dict):
             continue
 
@@ -110,7 +87,7 @@ def load_candidates():
             or security.get("id")
         )
 
-        if not symbol or not security_id:
+        if not symbol or security_id is None:
             continue
 
         try:
@@ -118,55 +95,35 @@ def load_candidates():
         except (TypeError, ValueError):
             continue
 
-        candidates.append({
-            "symbol": str(symbol).upper(),
+        symbol = str(symbol).upper().strip()
+        unique[symbol] = {
+            "symbol": symbol,
             "security_id": security_id,
-        })
-
-    # Remove duplicate symbols.
-    unique = {}
-
-    for stock in candidates:
-        unique[stock["symbol"]] = stock
+        }
 
     candidates = list(unique.values())
-
-    print(
-        f"Filtered candidates loaded: {len(candidates)}",
-        flush=True
-    )
-
+    print(f"Filtered candidates loaded: {len(candidates)}", flush=True)
     return candidates
 
 
 # ============================================================
-# STOCK RECORD HELPERS
+# API RECORD HELPERS
 # ============================================================
 
 def get_symbol(record):
-
     if not isinstance(record, dict):
         return ""
 
     security = record.get("security") or {}
-
-    symbol = (
-        record.get("symbol")
-        or record.get("Symbol")
-        or security.get("symbol")
-        or ""
-    )
-
+    symbol = record.get("symbol") or record.get("Symbol") or security.get("symbol") or ""
     return str(symbol).upper().strip()
 
 
 def get_security_id(record):
-
     if not isinstance(record, dict):
         return None
 
     security = record.get("security") or {}
-
     return (
         record.get("securityId")
         or record.get("security_id")
@@ -175,17 +132,12 @@ def get_security_id(record):
     )
 
 
-# ============================================================
-# PRICE EXTRACTION
-# FIXED: NEPSE CURRENT PRICE IS lastUpdatedPrice
-# ============================================================
-
 def get_price(record):
-
+    """NEPSE's current intraday price is returned in lastUpdatedPrice."""
     if not isinstance(record, dict):
         return None
 
-    possible_keys = [
+    price_keys = (
         "lastUpdatedPrice",
         "last_updated_price",
         "lastTradedPrice",
@@ -200,39 +152,31 @@ def get_price(record):
         "last_price",
         "currentPrice",
         "current_price",
-    ]
+    )
 
-    for key in possible_keys:
-
+    for key in price_keys:
         value = record.get(key)
-
         if value is None or value == "":
             continue
 
         try:
             price = float(value)
-
             if price > 0:
                 return price
-
         except (TypeError, ValueError):
-            continue
+            pass
 
-    # Check nested records if present.
-    for nested_key in [
+    # Support nested market-price objects, if the API returns them.
+    for nested_key in (
         "security",
         "marketData",
         "market_data",
         "priceData",
-        "price_data,
-    ]:
-
+        "price_data",
+    ):
         nested = record.get(nested_key)
-
         if isinstance(nested, dict):
-
             nested_price = get_price(nested)
-
             if nested_price is not None:
                 return nested_price
 
@@ -244,9 +188,7 @@ def get_price(record):
 # ============================================================
 
 def get_previous_ema(client, security_id):
-
     try:
-
         history = client.security_price_history(
             security_id=int(security_id),
             page=1,
@@ -257,63 +199,32 @@ def get_previous_ema(client, security_id):
             return None
 
         records = history.get("content", [])
-
         if not records:
             return None
 
         df = pd.DataFrame(records)
 
-        if "businessDate" not in df.columns:
-            print(
-                f"Missing businessDate for security {security_id}",
-                flush=True
-            )
+        if "businessDate" not in df.columns or "closePrice" not in df.columns:
             return None
 
-        if "closePrice" not in df.columns:
-            print(
-                f"Missing closePrice for security {security_id}",
-                flush=True
-            )
-            return None
-
-        df["Date"] = pd.to_datetime(
-            df["businessDate"],
-            errors="coerce"
-        )
-
-        df["Close"] = pd.to_numeric(
-            df["closePrice"],
-            errors="coerce"
-        )
-
+        df["Date"] = pd.to_datetime(df["businessDate"], errors="coerce")
+        df["Close"] = pd.to_numeric(df["closePrice"], errors="coerce")
         df = df.dropna(subset=["Date", "Close"])
 
         if df.empty:
             return None
 
-        # Sort oldest to newest.
         df = df.sort_values("Date")
 
-        # Exclude today's candle if API has already returned it.
+        # Use only completed daily candles before today.
         today = now_nepal().date()
-
-        df = df[
-            df["Date"].dt.date < today
-        ]
+        df = df[df["Date"].dt.date < today]
 
         if len(df) < EMA_LONG:
             return None
 
-        df["EMA7"] = df["Close"].ewm(
-            span=EMA_SHORT,
-            adjust=False
-        ).mean()
-
-        df["EMA21"] = df["Close"].ewm(
-            span=EMA_LONG,
-            adjust=False
-        ).mean()
+        df["EMA7"] = df["Close"].ewm(span=EMA_SHORT, adjust=False).mean()
+        df["EMA21"] = df["Close"].ewm(span=EMA_LONG, adjust=False).mean()
 
         latest = df.iloc[-1]
 
@@ -324,59 +235,29 @@ def get_previous_ema(client, security_id):
             "date": latest["Date"].strftime("%Y-%m-%d"),
         }
 
-    except Exception as error:
-
-        print(
-            f"Historical error for security {security_id}: {error}",
-            flush=True
-        )
-
+    except Exception as exc:
+        print(f"Historical error for security {security_id}: {exc}", flush=True)
         return None
 
 
-# ============================================================
-# BUILD HISTORICAL EMA CACHE
-# ============================================================
-
 def build_ema_cache(client, candidates):
-
-    print(
-        "Preparing previous completed daily EMA values...",
-        flush=True
-    )
+    print("Preparing previous completed daily EMA values...", flush=True)
 
     cache = {}
-
     total = len(candidates)
 
     for index, stock in enumerate(candidates, start=1):
+        result = get_previous_ema(client, stock["security_id"])
 
-        symbol = stock["symbol"]
-        security_id = stock["security_id"]
-
-        previous = get_previous_ema(
-            client,
-            security_id
-        )
-
-        if previous:
-            cache[symbol] = previous
+        if result:
+            cache[stock["symbol"]] = result
 
         if index % 25 == 0 or index == total:
+            print(f"Historical EMA progress: {index}/{total}", flush=True)
 
-            print(
-                f"Historical EMA progress: {index}/{total}",
-                flush=True
-            )
-
-        # Small delay to avoid making requests too quickly.
         time.sleep(0.15)
 
-    print(
-        f"Historical EMA cache ready: {len(cache)} stocks",
-        flush=True
-    )
-
+    print(f"Historical EMA cache ready: {len(cache)} stocks", flush=True)
     return cache
 
 
@@ -385,275 +266,124 @@ def build_ema_cache(client, candidates):
 # ============================================================
 
 def get_today_market_data(client):
-
     global PRICE_DEBUG_PRINTED
 
-    print(
-        "Fetching today's NEPSE price data...",
-        flush=True
-    )
-
+    print("Fetching today's NEPSE price data...", flush=True)
     raw = client.today_price_all()
 
-    # --------------------------------------------------------
-    # DIAGNOSTIC OUTPUT
-    # --------------------------------------------------------
-
     if not PRICE_DEBUG_PRINTED:
-
-        print(
-            "\n========== RAW PRICE DATA ==========",
-            flush=True
-        )
-
-        print(
-            "Response type:",
-            type(raw).__name__,
-            flush=True
-        )
+        print("\\n========== RAW PRICE DATA ==========", flush=True)
+        print(f"Response type: {type(raw).__name__}", flush=True)
 
         if isinstance(raw, list):
-
-            print(
-                "Response record count:",
-                len(raw),
-                flush=True
-            )
-
-            if len(raw) > 0:
-
-                print(
-                    "\nFirst record:",
-                    flush=True
-                )
-
-                print(
-                    raw[0],
-                    flush=True
-                )
-
-                print(
-                    "\nFirst record keys:",
-                    flush=True
-                )
-
+            print(f"Response record count: {len(raw)}", flush=True)
+            if raw:
+                print("First record:", flush=True)
+                print(raw[0], flush=True)
                 if isinstance(raw[0], dict):
-                    print(
-                        list(raw[0].keys()),
-                        flush=True
-                    )
-
+                    print("First record keys:", list(raw[0].keys()), flush=True)
             if len(raw) > 1:
-
-                print(
-                    "\nSecond record:",
-                    flush=True
-                )
-
-                print(
-                    raw[1],
-                    flush=True
-                )
+                print("Second record:", flush=True)
+                print(raw[1], flush=True)
 
         elif isinstance(raw, dict):
+            print("Response keys:", list(raw.keys()), flush=True)
+            print("Response content:", raw, flush=True)
 
-            print(
-                "Response keys:",
-                list(raw.keys()),
-                flush=True
-            )
-
-            print(
-                "Response content:",
-                raw,
-                flush=True
-            )
-
-        print(
-            "==================================\n",
-            flush=True
-        )
-
+        print("==================================\\n", flush=True)
         PRICE_DEBUG_PRINTED = True
 
-    # --------------------------------------------------------
-    # HANDLE RESPONSE
-    # --------------------------------------------------------
-
     if isinstance(raw, dict):
-
-        if "content" in raw:
+        if isinstance(raw.get("content"), list):
             raw = raw["content"]
-
-        elif "data" in raw:
+        elif isinstance(raw.get("data"), list):
             raw = raw["data"]
-
         else:
-            raw = list(raw.values())
+            print("Unexpected dictionary price response structure.", flush=True)
+            return {}
 
     if not isinstance(raw, list):
-
-        print(
-            "Unexpected price response format.",
-            flush=True
-        )
-
+        print("Unexpected price response format.", flush=True)
         return {}
 
     by_symbol = {}
-
-    matched_symbols = []
+    symbols = []
 
     for row in raw:
-
         if not isinstance(row, dict):
             continue
 
         symbol = get_symbol(row)
-
         if not symbol:
             continue
 
-        matched_symbols.append(symbol)
-
         price = get_price(row)
-
-        security_id = get_security_id(row)
-
         by_symbol[symbol] = {
-            "security_id": security_id,
+            "security_id": get_security_id(row),
             "price": price,
-            "raw_record": row,
         }
+        symbols.append(symbol)
 
-    print(
-        f"Symbols matched from price response: "
-        f"{len(matched_symbols)}",
-        flush=True
+    prices_read = sum(
+        1 for record in by_symbol.values()
+        if record.get("price") is not None
     )
 
-    print(
-        "Sample symbols:",
-        matched_symbols[:10],
-        flush=True
-    )
-
-    readable_prices = sum(
-        1
-        for row in by_symbol.values()
-        if row.get("price") is not None
-    )
-
-    print(
-        f"Prices successfully extracted: {readable_prices}",
-        flush=True
-    )
+    print(f"Symbols matched from price response: {len(symbols)}", flush=True)
+    print(f"Sample symbols: {symbols[:10]}", flush=True)
+    print(f"Prices successfully extracted: {prices_read}", flush=True)
 
     return by_symbol
 
 
 # ============================================================
-# PROVISIONAL EMA USING TODAY'S PRICE
+# EMA AND TELEGRAM
 # ============================================================
 
 def calculate_live_ema(previous_ema, current_price, span):
+    alpha = 2.0 / (span + 1.0)
+    return alpha * current_price + (1.0 - alpha) * previous_ema
 
-    alpha = 2 / (span + 1)
-
-    return (
-        alpha * current_price
-        + (1 - alpha) * previous_ema
-    )
-
-
-# ============================================================
-# TELEGRAM ALERT
-# ============================================================
 
 def send_telegram(message):
-
     if not BOT_TOKEN or not CHAT_ID:
-
-        print(
-            "Telegram credentials are missing.",
-            flush=True
-        )
-
+        print("Telegram credentials are missing from GitHub Secrets.", flush=True)
         return False
 
-    url = (
-        f"https://api.telegram.org/"
-        f"bot{BOT_TOKEN}/sendMessage"
-    )
-
-    payload = {
-        "chat_id": CHAT_ID,
-        "text": message,
-    }
+    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
 
     try:
-
         response = requests.post(
             url,
-            json=payload,
-            timeout=20
+            json={"chat_id": CHAT_ID, "text": message},
+            timeout=20,
         )
-
         response.raise_for_status()
-
         result = response.json()
 
         if result.get("ok"):
-
-            print(
-                "Telegram alert sent successfully.",
-                flush=True
-            )
-
+            print("Telegram alert sent successfully.", flush=True)
             return True
 
-        print(
-            f"Telegram returned an error: {result}",
-            flush=True
-        )
-
+        print(f"Telegram returned an error: {result}", flush=True)
         return False
 
-    except Exception as error:
-
-        print(
-            f"Telegram error: {error}",
-            flush=True
-        )
-
+    except Exception as exc:
+        print(f"Telegram error: {exc}", flush=True)
         return False
 
 
-# ============================================================
-# ALERT MESSAGE
-# ============================================================
-
-def create_alert_message(
-    symbol,
-    signal,
-    price,
-    ema7,
-    ema21,
-):
-
-    message = (
-        f"📈 NEPSE EMA {EMA_SHORT}/{EMA_LONG} SIGNAL\n\n"
-        f"Stock: {symbol}\n"
-        f"Signal: {signal}\n"
-        f"Price: {price:.2f}\n"
-        f"EMA {EMA_SHORT}: {ema7:.2f}\n"
-        f"EMA {EMA_LONG}: {ema21:.2f}\n\n"
-        f"Time: {print_time()} NPT\n\n"
-        f"⚠️ Intraday provisional signal. "
-        f"May change before market close."
+def create_alert_message(symbol, signal, price, ema7, ema21):
+    return (
+        f"📈 NEPSE EMA {EMA_SHORT}/{EMA_LONG} SIGNAL\\n\\n"
+        f"Stock: {symbol}\\n"
+        f"Signal: {signal}\\n"
+        f"Price: {price:.2f}\\n"
+        f"EMA {EMA_SHORT}: {ema7:.2f}\\n"
+        f"EMA {EMA_LONG}: {ema21:.2f}\\n\\n"
+        f"Time: {print_time()} NPT\\n\\n"
+        "⚠️ Provisional intraday signal; may change before market close."
     )
-
-    return message
 
 
 # ============================================================
@@ -661,202 +391,91 @@ def create_alert_message(
 # ============================================================
 
 def main():
-
     print("=" * 58, flush=True)
-
-    print(
-        " NEPSE CLOUD DAILY EMA 7/21 CROSSOVER MONITOR",
-        flush=True
-    )
-
-    print(
-        " Historical daily candles + today's latest traded price",
-        flush=True
-    )
-
-    print(
-        " Runs weekdays, 11:00 AM to 3:00 PM Nepal time",
-        flush=True
-    )
-
+    print(" NEPSE CLOUD DAILY EMA 7/21 CROSSOVER MONITOR", flush=True)
+    print(" Historical daily candles + today's latest traded price", flush=True)
+    print(" Runs weekdays, 11:00 AM to 3:00 PM Nepal time", flush=True)
     print("=" * 58, flush=True)
 
     candidates = load_candidates()
-
     if not candidates:
-
-        print(
-            "No filtered stocks found. Scanner stopped.",
-            flush=True
-        )
-
+        print("No filtered stocks found. Scanner stopped.", flush=True)
         return
 
-    # In-memory alert tracking.
-    # One alert per symbol per signal per day.
     sent_alerts = set()
 
     with NepseClient() as client:
-
-        # Build previous completed daily EMA values.
-        ema_cache = build_ema_cache(
-            client,
-            candidates
-        )
+        ema_cache = build_ema_cache(client, candidates)
 
         if not ema_cache:
-
-            print(
-                "Historical EMA cache is empty. Scanner stopped.",
-                flush=True
-            )
-
+            print("Historical EMA cache is empty. Scanner stopped.", flush=True)
             return
 
-        # ----------------------------------------------------
-        # MONITORING LOOP
-        # ----------------------------------------------------
-
         while True:
-
             current = now_nepal()
 
             if not is_weekday():
-
-                print(
-                    f"Weekend detected ({print_time()}). "
-                    f"Scanner stopped.",
-                    flush=True
-                )
-
+                print(f"Weekend detected ({print_time()} NPT). Scanner stopped.", flush=True)
                 break
 
             if current.time() < MARKET_START:
-
-                print(
-                    f"Before market hours ({print_time()}). "
-                    f"Waiting until 11:00 AM Nepal time.",
-                    flush=True
-                )
-
+                print(f"Before market hours ({print_time()} NPT). Waiting until 11:00 AM.", flush=True)
                 time.sleep(60)
-
                 continue
 
             if current.time() > MARKET_END:
-
-                print(
-                    f"Outside market hours ({print_time()}). "
-                    f"Monitor stopped.",
-                    flush=True
-                )
-
+                print(f"Outside market hours ({print_time()} NPT). Monitor stopped.", flush=True)
                 break
 
-            # ------------------------------------------------
-            # FETCH TODAY'S PRICE DATA
-            # ------------------------------------------------
-
             try:
-
                 market_data = get_today_market_data(client)
-
-            except Exception as error:
-
-                print(
-                    f"Today's price API error: {error}",
-                    flush=True
-                )
-
-                print(
-                    "Retrying in 5 minutes.",
-                    flush=True
-                )
-
+            except Exception as exc:
+                print(f"Today's price API error: {exc}", flush=True)
+                print("Retrying in 5 minutes.", flush=True)
                 time.sleep(SCAN_INTERVAL)
-
                 continue
 
             scan_started = time.time()
-
-            print(
-                f"Scan started: {print_time()} NPT",
-                flush=True
-            )
+            print(f"Scan started: {print_time()} NPT", flush=True)
 
             prices_found = 0
             missing = 0
             crossover_conditions = 0
             alerts_sent = 0
 
-            # ------------------------------------------------
-            # SCAN EACH STOCK
-            # ------------------------------------------------
-
             for stock in candidates:
-
                 symbol = stock["symbol"]
-
                 previous = ema_cache.get(symbol)
-
                 market_row = market_data.get(symbol, {})
-
                 price = market_row.get("price")
 
                 if not previous or price is None:
-
                     missing += 1
-
                     continue
 
                 try:
                     price = float(price)
                 except (TypeError, ValueError):
-
                     missing += 1
-
                     continue
 
                 if price <= 0:
-
                     missing += 1
-
                     continue
 
                 prices_found += 1
 
-                # Calculate provisional current EMA values.
-                live_ema7 = calculate_live_ema(
-                    previous["ema7"],
-                    price,
-                    EMA_SHORT
-                )
+                live_ema7 = calculate_live_ema(previous["ema7"], price, EMA_SHORT)
+                live_ema21 = calculate_live_ema(previous["ema21"], price, EMA_LONG)
 
-                live_ema21 = calculate_live_ema(
-                    previous["ema21"],
-                    price,
-                    EMA_LONG
-                )
-
-                previous_ema7 = previous["ema7"]
-                previous_ema21 = previous["ema21"]
+                old_ema7 = previous["ema7"]
+                old_ema21 = previous["ema21"]
 
                 signal = None
 
-                # BUY crossover.
-                if (
-                    previous_ema7 <= previous_ema21
-                    and live_ema7 > live_ema21
-                ):
-
+                if old_ema7 <= old_ema21 and live_ema7 > live_ema21:
                     signal = "BUY"
-
-                # SELL crossover.
-                elif (
-                    previous_ema7 >= previous_ema21
-                    and live_ema7 < live_ema21
-                ):
-
+                elif old_ema7 >= old_ema21 and live_ema7 < live_ema21:
                     signal = "SELL"
 
                 if not signal:
@@ -864,13 +483,7 @@ def main():
 
                 crossover_conditions += 1
 
-                # Avoid repeatedly sending the same signal.
-                alert_key = (
-                    now_nepal().date(),
-                    symbol,
-                    signal,
-                )
-
+                alert_key = (now_nepal().date(), symbol, signal)
                 if alert_key in sent_alerts:
                     continue
 
@@ -883,70 +496,33 @@ def main():
                 )
 
                 print(
-                    f"CROSSOVER: {symbol} | "
-                    f"{signal} | Price: {price:.2f}",
-                    flush=True
+                    f"CROSSOVER: {symbol} | {signal} | Price: {price:.2f}",
+                    flush=True,
                 )
 
                 if send_telegram(message):
-
                     sent_alerts.add(alert_key)
-
                     alerts_sent += 1
-
-            # ------------------------------------------------
-            # SCAN SUMMARY
-            # ------------------------------------------------
 
             elapsed = time.time() - scan_started
 
             print(
-                f"Scan complete | "
-                f"prices: {prices_found} | "
-                f"missing: {missing} | "
+                f"Scan complete | prices: {prices_found} | missing: {missing} | "
                 f"crossover conditions: {crossover_conditions} | "
-                f"alerts sent: {alerts_sent} | "
-                f"elapsed: {elapsed:.1f}s",
-                flush=True
+                f"alerts sent: {alerts_sent} | elapsed: {elapsed:.1f}s",
+                flush=True,
             )
 
-            # ------------------------------------------------
-            # WAIT FOR NEXT SCAN
-            # ------------------------------------------------
+            wait_seconds = max(1, SCAN_INTERVAL - int(elapsed))
+            print(f"Next scan in about {wait_seconds} seconds.", flush=True)
+            time.sleep(wait_seconds)
 
-            print(
-                f"Next scan in about "
-                f"{max(1, SCAN_INTERVAL - int(elapsed))} seconds.",
-                flush=True
-            )
-
-            time.sleep(
-                max(1, SCAN_INTERVAL - int(elapsed))
-            )
-
-
-# ============================================================
-# START
-# ============================================================
 
 if __name__ == "__main__":
-
     try:
-
         main()
-
     except KeyboardInterrupt:
-
-        print(
-            "\nScanner stopped by user.",
-            flush=True
-        )
-
-    except Exception as error:
-
-        print(
-            f"\nFATAL SCANNER ERROR: {error}",
-            flush=True
-        )
-
+        print("\\nScanner stopped by user.", flush=True)
+    except Exception as exc:
+        print(f"\\nFATAL SCANNER ERROR: {exc}", flush=True)
         raise
