@@ -1,6 +1,6 @@
 name: NEPSE Volume Alert Scanner
 
-'on':
+on:
   workflow_dispatch:
   schedule:
     # 11:00 AM Nepal time (05:15 UTC), weekdays
