@@ -1,5 +1,5 @@
 {
-  "updated_at_npt": "2026-11-27 12:18:08",
+  "updated_at_npt": "2026-11-27 12:18:10",
   "sent_alerts": [
     "2026-11-27|BHL|BUY",
     "2026-11-27|EHPL|SELL",
@@ -11,6 +11,7 @@
     "2026-11-27|NIL|SELL",
     "2026-11-27|NSY|SELL",
     "2026-11-27|RBBF40|SELL",
-    "2026-11-27|RHGCL|BUY"
+    "2026-11-27|RHGCL|BUY",
+    "2026-11-27|RSY2|SELL"
   ]
 }
