@@ -1,6 +1,7 @@
 import os
 import json
 import time
+import subprocess
 from datetime import datetime, time as dt_time
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -25,6 +26,7 @@ SCAN_INTERVAL = 300
 
 BASE_DIR = Path(__file__).resolve().parent
 STOCK_FILE = BASE_DIR / "filtered_stocks.json"
+ALERT_HISTORY_FILE = BASE_DIR / "alert_history.json"
 
 BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
@@ -96,9 +98,19 @@ def load_candidates():
             continue
 
         symbol = str(symbol).upper().strip()
+        company_name = (
+            record.get("name")
+            or record.get("companyName")
+            or record.get("company_name")
+            or record.get("securityName")
+            or security.get("name")
+            or symbol
+        )
+
         unique[symbol] = {
             "symbol": symbol,
             "security_id": security_id,
+            "name": str(company_name).strip(),
         }
 
     candidates = list(unique.values())
@@ -337,6 +349,103 @@ def get_today_market_data(client):
 
 
 # ============================================================
+# PERSISTENT ALERT HISTORY
+# ============================================================
+
+def load_alert_history():
+    """Load alert keys from disk so repeated scans/restarts do not resend."""
+    if not ALERT_HISTORY_FILE.exists():
+        return set()
+
+    try:
+        with open(ALERT_HISTORY_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        if isinstance(data, dict):
+            keys = data.get("sent_alerts", [])
+        elif isinstance(data, list):
+            # Also accept a simple list for compatibility.
+            keys = data
+        else:
+            keys = []
+
+        today = now_nepal().date()
+        retained = set()
+        for key in keys:
+            key = str(key)
+            date_part = key.split("|", 1)[0]
+            try:
+                key_date = datetime.strptime(date_part, "%Y-%m-%d").date()
+            except ValueError:
+                continue
+            if 0 <= (today - key_date).days <= 30:
+                retained.add(key)
+        return retained
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"Could not read alert history ({exc}); starting with empty history.", flush=True)
+        return set()
+
+
+def save_alert_history(sent_alerts):
+    """Write alert history atomically to avoid a partially-written JSON file."""
+    temporary_file = ALERT_HISTORY_FILE.with_suffix(".json.tmp")
+    payload = {
+        "updated_at_npt": print_time(),
+        "sent_alerts": sorted(sent_alerts),
+    }
+
+    with open(temporary_file, "w", encoding="utf-8") as f:
+        json.dump(payload, f, indent=2, ensure_ascii=False)
+    temporary_file.replace(ALERT_HISTORY_FILE)
+
+
+def persist_alert_history_to_github():
+    """Commit history to the repo so a fresh GitHub runner can restore it.
+
+    Requires workflow permission: contents: write and checkout credentials.
+    If GitHub persistence fails, local history is still saved for this run.
+    """
+    if not os.getenv("GITHUB_ACTIONS"):
+        return
+
+    try:
+        subprocess.run(
+            ["git", "config", "user.name", "github-actions[bot]"],
+            cwd=BASE_DIR, check=True, capture_output=True, text=True,
+        )
+        subprocess.run(
+            ["git", "config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com"],
+            cwd=BASE_DIR, check=True, capture_output=True, text=True,
+        )
+        subprocess.run(
+            ["git", "add", ALERT_HISTORY_FILE.name],
+            cwd=BASE_DIR, check=True, capture_output=True, text=True,
+        )
+
+        status = subprocess.run(
+            ["git", "diff", "--cached", "--quiet"],
+            cwd=BASE_DIR, capture_output=True,
+        )
+        if status.returncode == 0:
+            return
+
+        subprocess.run(
+            ["git", "commit", "-m", "Update Telegram alert history"],
+            cwd=BASE_DIR, check=True, capture_output=True, text=True,
+        )
+        subprocess.run(
+            ["git", "push"],
+            cwd=BASE_DIR, check=True, capture_output=True, text=True,
+        )
+        print("Alert history saved to GitHub for future workflow runs.", flush=True)
+
+    except subprocess.CalledProcessError as exc:
+        details = (exc.stderr or exc.stdout or str(exc)).strip()
+        print(f"WARNING: Could not persist alert history to GitHub: {details}", flush=True)
+        print("Local alert history remains saved for this workflow run.", flush=True)
+
+
+# ============================================================
 # EMA AND TELEGRAM
 # ============================================================
 
@@ -373,16 +482,26 @@ def send_telegram(message):
         return False
 
 
-def create_alert_message(symbol, signal, price, ema7, ema21):
+def create_alert_message(symbol, signal, price, ema7, ema21, company_name=None):
+    signal_emoji = "🟢" if signal == "BUY" else "🔴"
+    signal_title = "BULLISH EMA CROSSOVER" if signal == "BUY" else "BEARISH EMA CROSSOVER"
+    gap = ema7 - ema21
+    gap_percent = (gap / ema21 * 100.0) if ema21 else 0.0
+    display_name = company_name or symbol
+
     return (
-        f"📈 NEPSE EMA {EMA_SHORT}/{EMA_LONG} SIGNAL\\n\\n"
-        f"Stock: {symbol}\\n"
-        f"Signal: {signal}\\n"
-        f"Price: {price:.2f}\\n"
-        f"EMA {EMA_SHORT}: {ema7:.2f}\\n"
-        f"EMA {EMA_LONG}: {ema21:.2f}\\n\\n"
-        f"Time: {print_time()} NPT\\n\\n"
-        "⚠️ Provisional intraday signal; may change before market close."
+        f"{signal_emoji} NEPSE EMA {EMA_SHORT}/{EMA_LONG} {signal} SIGNAL\n"
+        f"━━━━━━━━━━━━━━━━━━\n"
+        f"🏢 Stock: {display_name} ({symbol})\n"
+        f"📊 Signal: {signal_title}\n\n"
+        f"💰 Latest Price: Rs. {price:,.2f}\n"
+        f"📉 EMA {EMA_SHORT}: Rs. {ema7:,.2f}\n"
+        f"📈 EMA {EMA_LONG}: Rs. {ema21:,.2f}\n"
+        f"↔️ EMA Gap: Rs. {gap:,.2f} ({gap_percent:+.2f}%)\n"
+        f"━━━━━━━━━━━━━━━━━━\n"
+        f"⏰ Time: {now_nepal().strftime('%I:%M %p')} NPT\n"
+        f"📅 Date: {now_nepal().strftime('%d %b %Y')}\n\n"
+        "⚠️ Provisional intraday signal; it may change before market close."
     )
 
 
@@ -402,7 +521,8 @@ def main():
         print("No filtered stocks found. Scanner stopped.", flush=True)
         return
 
-    sent_alerts = set()
+    sent_alerts = load_alert_history()
+    print(f"Previously sent alert keys loaded: {len(sent_alerts)}", flush=True)
 
     with NepseClient() as client:
         ema_cache = build_ema_cache(client, candidates)
@@ -483,16 +603,20 @@ def main():
 
                 crossover_conditions += 1
 
-                alert_key = (now_nepal().date(), symbol, signal)
+                # One alert per stock, direction, and Nepal trading date.
+                # A new opposite signal can still alert on the same day.
+                alert_key = f"{now_nepal().date().isoformat()}|{symbol}|{signal}"
                 if alert_key in sent_alerts:
                     continue
 
+                company_name = stock.get("name") or stock.get("companyName")
                 message = create_alert_message(
                     symbol=symbol,
                     signal=signal,
                     price=price,
                     ema7=live_ema7,
                     ema21=live_ema21,
+                    company_name=company_name,
                 )
 
                 print(
@@ -502,6 +626,8 @@ def main():
 
                 if send_telegram(message):
                     sent_alerts.add(alert_key)
+                    save_alert_history(sent_alerts)
+                    persist_alert_history_to_github()
                     alerts_sent += 1
 
             elapsed = time.time() - scan_started
