@@ -1,39 +1,38 @@
-name: NEPSE EMA Monitor
+name: NEPSE EMA Scanner
 
-'on':
+on:
   workflow_dispatch:
   schedule:
-    - cron: "15 5 * * 1-5"
+    # 11:00 AM Nepal time (05:15 UTC), weekdays
+    - cron: '15 5 * * 1-5'
+
+permissions:
+  contents: write
 
 jobs:
-  monitor:
+  scan:
     runs-on: ubuntu-latest
     timeout-minutes: 300
-
-    env:
-      NEPSE_API_KEY: ${{ secrets.NEPSE_API_KEY }}
-      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: '3.11'
+          cache: pip
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run Python scanner
-        run: |
-          echo "STEP 1: Python is starting"
-          python -u -c "print('STEP 2: Python works', flush=True)"
-          echo "STEP 3: Testing imports"
-          python -u -c "import pandas; print('pandas OK', flush=True); import requests; print('requests OK', flush=True); import nepsepy; print('nepsepy OK', flush=True)"
-          echo "STEP 4: Starting scanner"
-          python -u cloud_scanner.py
+      - name: Run NEPSE scanner
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python -u cloud_scanner.py
