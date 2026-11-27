@@ -1,10 +1,11 @@
 {
-  "updated_at_npt": "2026-11-27 12:17:59",
+  "updated_at_npt": "2026-11-27 12:18:00",
   "sent_alerts": [
     "2026-11-27|BHL|BUY",
     "2026-11-27|EHPL|SELL",
     "2026-11-27|GUFL|BUY",
     "2026-11-27|KBSH|SELL",
-    "2026-11-27|KDBY|SELL"
+    "2026-11-27|KDBY|SELL",
+    "2026-11-27|KMCDB|BUY"
   ]
 }
