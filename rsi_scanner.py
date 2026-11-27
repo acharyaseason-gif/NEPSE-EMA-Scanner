@@ -86,18 +86,32 @@ def load_stocks():
 
 
 def load_state():
-    if STATE_FILE.exists():
-        try:
-            state = json.loads(STATE_FILE.read_text(encoding="utf-8"))
-            if isinstance(state, dict):
-                return state
-        except (OSError, json.JSONDecodeError):
-            print("WARNING: RSI state file unreadable; starting fresh.")
-    return {
-        "alerted65": [],
+    default = {
+        "alerted_events": [],
+        "alerted65": [],  # legacy compatibility
+        "alerted70": [],  # legacy compatibility
         "armed70": {},
         "last_rsi": {},
     }
+    if not STATE_FILE.exists():
+        return default
+    try:
+        state = json.loads(STATE_FILE.read_text(encoding="utf-8"))
+        if not isinstance(state, dict):
+            return default
+        # Migrate old state so previously sent alerts remain suppressed.
+        keys = set(state.get("alerted_events", []))
+        keys.update(state.get("alerted65", []))
+        keys.update(state.get("alerted70", []))
+        state["alerted_events"] = sorted(keys)
+        state.setdefault("armed70", {})
+        state.setdefault("last_rsi", {})
+        state.setdefault("alerted65", [])
+        state.setdefault("alerted70", [])
+        return state
+    except (OSError, json.JSONDecodeError):
+        print("WARNING: RSI state file unreadable; starting fresh.")
+        return default
 
 
 def save_state_and_push(state):
@@ -140,7 +154,19 @@ def save_state_and_push(state):
 
 
 def get_today_prices(client):
-    raw = client.today_price_all()
+    raw = None
+    last_error = None
+    for attempt in range(1, 4):
+        try:
+            raw = client.today_price_all()
+            break
+        except Exception as exc:
+            last_error = exc
+            print(f"Today's price request failed (attempt {attempt}/3): {exc}", flush=True)
+            if attempt < 3:
+                time.sleep(10 * attempt)
+    if raw is None:
+        raise RuntimeError(f"Today's price request failed after 3 attempts: {last_error}")
     by_symbol = {}
     for row in raw or []:
         symbol = get_symbol(row)
@@ -248,6 +274,7 @@ def main():
     print("=" * 58)
     print(" NEPSE FILTERED-STOCK RSI ALERT MONITOR")
     print(" RSI(14) | Levels 65 and 70 | 5-minute scan | 11 AM-3 PM NPT")
+    print(" One alert per stock, signal type, and trading day")
     print("=" * 58)
 
     if not BOT_TOKEN or not CHAT_ID:
@@ -256,7 +283,7 @@ def main():
     stocks = load_stocks()
     stock_by_symbol = {str(stock["symbol"]).upper(): stock for stock in stocks}
     state = load_state()
-    alerted65 = set(state.setdefault("alerted65", []))
+    alerted_events = set(state.setdefault("alerted_events", []))
     armed70 = state.setdefault("armed70", {})
     last_rsi = state.setdefault("last_rsi", {})
     cached_date = None
@@ -271,17 +298,17 @@ def main():
             if now.time() < MARKET_START:
                 opening = datetime.combine(now.date(), MARKET_START, tzinfo=TZ)
                 wait_seconds = max(1, (opening - now).total_seconds())
-                print(f"Before market open; waiting {wait_seconds / 60:.1f} minutes.")
+                print(f"Before market open; waiting {wait_seconds / 60:.1f} minutes.", flush=True)
                 time.sleep(wait_seconds)
                 continue
             if now.time() >= MARKET_END:
-                print("Market session ended. Exiting.")
+                print("Market session ended (3:00 PM NPT). Exiting.", flush=True)
                 return
 
             today = now.date()
             today_text = today.isoformat()
             if cached_date != today_text:
-                print("Loading historical closes for RSI(14)...")
+                print("Loading historical closes for RSI(14)...", flush=True)
                 prices = get_today_prices(client)
                 historical = {}
                 loaded = 0
@@ -289,7 +316,7 @@ def main():
                     current = prices.get(symbol, {})
                     security_id = current.get("security_id") or get_security_id(stock)
                     if not security_id:
-                        print(f"[{index}/{len(stock_by_symbol)}] {symbol}: no security ID")
+                        print(f"[{index}/{len(stock_by_symbol)}] {symbol}: no security ID", flush=True)
                         continue
                     try:
                         closes = get_historical_closes(client, security_id, today)
@@ -297,18 +324,23 @@ def main():
                             historical[symbol] = closes
                             loaded += 1
                         else:
-                            print(f"[{index}/{len(stock_by_symbol)}] {symbol}: insufficient close history")
+                            print(f"[{index}/{len(stock_by_symbol)}] {symbol}: insufficient close history", flush=True)
                     except Exception as exc:
-                        print(f"[{index}/{len(stock_by_symbol)}] {symbol}: history error: {exc}")
+                        print(f"[{index}/{len(stock_by_symbol)}] {symbol}: history error: {exc}", flush=True)
                     time.sleep(REQUEST_DELAY_SECONDS)
                 cached_date = today_text
-                print(f"Historical RSI data ready: {loaded} stocks")
+                print(f"Historical RSI data ready: {loaded}/{len(stock_by_symbol)} stocks", flush=True)
 
             scan_started = time.time()
-            prices = get_today_prices(client)
+            try:
+                prices = get_today_prices(client)
+            except Exception as exc:
+                print(f"Scan price request failed; keeping scanner alive and retrying next cycle: {exc}", flush=True)
+                time.sleep(60)
+                continue
             checked = missing = sent = 0
             state_changed = False
-            print(f"\nScan started: {now_local():%H:%M:%S} NPT")
+            print(f"\nScan started: {now_local():%H:%M:%S} NPT", flush=True)
 
             for symbol, stock in stock_by_symbol.items():
                 current = prices.get(symbol, {})
@@ -318,8 +350,6 @@ def main():
                     missing += 1
                     continue
 
-                # Previous RSI is based on completed daily candles; current RSI
-                # uses the same candles plus the latest available price.
                 previous_rsi = calculate_rsi_wilder(closes, RSI_PERIOD)
                 current_rsi = calculate_rsi_wilder(closes + [price], RSI_PERIOD)
                 if previous_rsi is None or current_rsi is None:
@@ -327,57 +357,66 @@ def main():
                     continue
                 checked += 1
 
-                # Arm a 70 retest when RSI has been above 70. This state persists
-                # until the RSI returns to 70 or below and the alert is delivered.
+                # Keep the 70-level state armed after an RSI >70, until it falls to <=70.
                 if current_rsi > RSI_OVERBOUGHT_LEVEL:
                     if not armed70.get(symbol, False):
                         armed70[symbol] = True
                         state_changed = True
-                elif previous_rsi > RSI_OVERBOUGHT_LEVEL and not armed70.get(symbol, False):
-                    armed70[symbol] = True
-                    state_changed = True
 
-                daily_key = f"{today_text}:{symbol}:cross65"
-                crossing65 = previous_rsi <= RSI_CROSS_LEVEL < current_rsi
-                if crossing65 and daily_key not in alerted65:
-                    message = format_alert(
-                        "cross65", symbol, str(stock.get("name") or symbol),
-                        price, previous_rsi, current_rsi,
-                    )
+                event_types = []
+                cross_key = f"{today_text}:{symbol}:cross65"
+                retest_key = f"{today_text}:{symbol}:retest70"
+
+                if previous_rsi <= RSI_CROSS_LEVEL < current_rsi and cross_key not in alerted_events:
+                    event_types.append("cross65")
+                if armed70.get(symbol, False) and current_rsi <= RSI_OVERBOUGHT_LEVEL and retest_key not in alerted_events:
+                    event_types.append("retest70")
+
+                # Send one combined Telegram message if both distinct conditions
+                # happen for this stock in the same scan.
+                if event_types:
+                    if len(event_types) == 1:
+                        message = format_alert(
+                            event_types[0], symbol, str(stock.get("name") or symbol),
+                            price, previous_rsi, current_rsi,
+                        )
+                    else:
+                        message = (
+                            "🟠 NEPSE RSI MULTIPLE SIGNALS\n"
+                            "━━━━━━━━━━━━━━━━━━\n"
+                            f"🏢 {stock.get('name') or symbol} ({symbol})\n"
+                            f"💰 Latest price: Rs. {price:,.2f}\n"
+                            f"📊 Previous RSI(14): {previous_rsi:.2f}\n"
+                            f"📊 Current RSI(14): {current_rsi:.2f}\n"
+                            "Signals: RSI crossed above 65; RSI 70 retest\n"
+                            f"⏰ {now_local():%Y-%m-%d %H:%M} NPT\n"
+                            "⚠️ Intraday provisional RSI; not a buy/sell recommendation."
+                        )
                     try:
                         send_telegram(message)
-                        alerted65.add(daily_key)
-                        state["alerted65"] = sorted(alerted65)
-                        save_state_and_push(state)
-                        sent += 1
-                        print(f"RSI >65 alert sent: {symbol} | RSI {current_rsi:.2f}")
-                    except Exception as exc:
-                        print(f"RSI 65 alert failed for {symbol}: {exc}")
-
-                if armed70.get(symbol, False) and current_rsi <= RSI_OVERBOUGHT_LEVEL:
-                    message = format_alert(
-                        "retest70", symbol, str(stock.get("name") or symbol),
-                        price, previous_rsi, current_rsi,
-                    )
-                    try:
-                        send_telegram(message)
-                        armed70[symbol] = False
+                        for event_type in event_types:
+                            event_key = f"{today_text}:{symbol}:{event_type}"
+                            alerted_events.add(event_key)
+                        if "retest70" in event_types:
+                            armed70[symbol] = False
                         state_changed = True
-                        save_state_and_push(state)
                         sent += 1
-                        print(f"RSI 70 retest alert sent: {symbol} | RSI {current_rsi:.2f}")
+                        print(f"RSI alert sent: {symbol} | signals={','.join(event_types)} | RSI {current_rsi:.2f}", flush=True)
                     except Exception as exc:
-                        print(f"RSI 70 retest alert failed for {symbol}: {exc}")
+                        print(f"RSI alert failed for {symbol}: {exc}", flush=True)
 
                 last_rsi[symbol] = round(current_rsi, 4)
 
+            # Save/push once per scan, not once per symbol alert. This reduces
+            # Git commits and avoids a long scan being blocked by repeated pushes.
             if state_changed:
+                state["alerted_events"] = sorted(alerted_events)
                 save_state_and_push(state)
 
             elapsed = time.time() - scan_started
-            print(f"Scan complete | checked={checked} missing={missing} alerts={sent} | {elapsed:.1f}s")
+            print(f"Scan complete | checked={checked} missing={missing} alerts={sent} | {elapsed:.1f}s", flush=True)
             wait = max(1, SCAN_INTERVAL_SECONDS - elapsed)
-            print(f"Next scan in about {wait:.0f} seconds.")
+            print(f"Next scan in about {wait:.0f} seconds. Scanner will exit at 3:00 PM NPT.", flush=True)
             time.sleep(wait)
 
 
