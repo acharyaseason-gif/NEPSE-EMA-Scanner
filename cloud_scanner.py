@@ -32,7 +32,6 @@ STOCK_FILE = BASE_DIR / "filtered_stocks.json"
 BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
 CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
 
-# Print the raw NEPSE price response only once per workflow run.
 PRICE_DEBUG_PRINTED = False
 
 
@@ -178,6 +177,7 @@ def get_security_id(record):
 
 # ============================================================
 # PRICE EXTRACTION
+# FIXED: NEPSE CURRENT PRICE IS lastUpdatedPrice
 # ============================================================
 
 def get_price(record):
@@ -185,11 +185,11 @@ def get_price(record):
     if not isinstance(record, dict):
         return None
 
-    # Common NEPSE price field names.
     possible_keys = [
+        "lastUpdatedPrice",
+        "last_updated_price",
         "lastTradedPrice",
         "last_traded_price",
-        "lastTradedPriceValue",
         "ltp",
         "LTP",
         "closePrice",
@@ -200,28 +200,31 @@ def get_price(record):
         "last_price",
         "currentPrice",
         "current_price",
-        "closing_price",
     ]
 
     for key in possible_keys:
 
         value = record.get(key)
 
-        if value in (None, "", 0, "0"):
+        if value is None or value == "":
             continue
 
         try:
-            return float(value)
-        except (TypeError, ValueError):
-            pass
+            price = float(value)
 
-    # Check nested records, if present.
+            if price > 0:
+                return price
+
+        except (TypeError, ValueError):
+            continue
+
+    # Check nested records if present.
     for nested_key in [
         "security",
         "marketData",
         "market_data",
         "priceData",
-        "price_data",
+        "price_data,
     ]:
 
         nested = record.get(nested_key)
@@ -292,7 +295,7 @@ def get_previous_ema(client, security_id):
         # Sort oldest to newest.
         df = df.sort_values("Date")
 
-        # Exclude today's candle, if the API has already returned it.
+        # Exclude today's candle if API has already returned it.
         today = now_nepal().date()
 
         df = df[
@@ -357,7 +360,6 @@ def build_ema_cache(client, candidates):
         )
 
         if previous:
-
             cache[symbol] = previous
 
         if index % 25 == 0 or index == total:
@@ -536,7 +538,6 @@ def get_today_market_data(client):
         flush=True
     )
 
-    # Count how many records actually have a readable price.
     readable_prices = sum(
         1
         for row in by_symbol.values()
@@ -914,7 +915,8 @@ def main():
             # ------------------------------------------------
 
             print(
-                f"Next scan in about {SCAN_INTERVAL - int(elapsed)} seconds.",
+                f"Next scan in about "
+                f"{max(1, SCAN_INTERVAL - int(elapsed))} seconds.",
                 flush=True
             )
 
