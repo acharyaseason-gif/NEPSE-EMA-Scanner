@@ -2,6 +2,8 @@
   "date": "2026-11-27",
   "alerted": [
     "2026-11-27:ALICL:volume-burst",
+    "2026-11-27:BFC:daily-spike",
+    "2026-11-27:BFC:volume-burst",
     "2026-11-27:DHEL:volume-burst",
     "2026-11-27:FOWAD:daily-spike",
     "2026-11-27:GRDBL:volume-burst",
