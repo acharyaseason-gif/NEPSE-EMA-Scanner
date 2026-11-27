@@ -41,6 +41,7 @@
     "2026-11-27:SMATA:volume-burst",
     "2026-11-27:SOHL:volume-burst",
     "2026-11-27:TSHL:daily-spike",
-    "2026-11-27:TSHL:volume-burst"
+    "2026-11-27:TSHL:volume-burst",
+    "2026-11-27:UNHPL:volume-burst"
   ]
 }
