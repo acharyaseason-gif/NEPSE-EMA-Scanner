@@ -18,8 +18,11 @@ MARKET_END = dt_time(15, 0)
 SCAN_INTERVAL_SECONDS = 300
 REQUEST_DELAY_SECONDS = 0.35
 HISTORY_DAYS = 20
-DAILY_SPIKE_MULTIPLE = 2.0       # Today's cumulative volume >= 2x average daily volume
-BURST_AVG_FRACTION = 0.10        # New volume in one scan interval >= 10% of average daily volume
+DAILY_SPIKE_MULTIPLE = 2.0       # Alert only when today's cumulative volume is > 2x 20-session average
+BURST_MULTIPLE = 20.0            # Alert when 5-minute volume is >= 20x typical 5-minute volume
+MARKET_MINUTES = 240              # Approx. 11:00 AM-3:00 PM NPT
+SCAN_INTERVAL_MINUTES = SCAN_INTERVAL_SECONDS / 60
+EXPECTED_SCANS_PER_DAY = MARKET_MINUTES / SCAN_INTERVAL_MINUTES  # about 48 scans/day
 
 ROOT = Path(__file__).resolve().parent
 STOCK_FILE = ROOT / "filtered_stocks.json"
@@ -85,8 +88,17 @@ def load_state(today_text):
     else:
         state = {}
     if state.get("date") != today_text:
-        state = {"date": today_text, "alerted": []}
+        state = {"date": today_text, "alerted": [], "alerted_symbols": []}
     state.setdefault("alerted", [])
+    state.setdefault("alerted_symbols", [])
+    # Migrate today's older trigger-key history so symbols already alerted by
+    # the previous version are not notified again after this update.
+    migrated_symbols = set(state.get("alerted_symbols", []))
+    for key in state.get("alerted", []):
+        parts = str(key).split(":")
+        if len(parts) >= 3 and parts[0] == today_text:
+            migrated_symbols.add(parts[1])
+    state["alerted_symbols"] = sorted(migrated_symbols)
     return state
 
 
@@ -166,7 +178,8 @@ def send_telegram(message):
         raise RuntimeError(f"Telegram API returned error: {result}")
 
 
-def format_alert(symbol, name, price, current_volume, average_volume, ratio, burst_volume, tags):
+def format_alert(symbol, name, price, current_volume, average_volume, ratio,
+                 burst_volume, burst_multiple, tags):
     now = now_local()
     increase = (ratio - 1) * 100
     lines = [
@@ -178,8 +191,9 @@ def format_alert(symbol, name, price, current_volume, average_volume, ratio, bur
         f"📊 20-session average: {average_volume:,.0f} shares",
         f"🔥 Volume ratio: {ratio:.2f}× average (+{increase:.1f}%)",
     ]
-    if burst_volume is not None:
-        lines.append(f"⚡ Volume since previous scan: {burst_volume:,.0f} shares")
+    if burst_volume is not None and burst_multiple is not None:
+        lines.append(f"⚡ Volume in last scan: {burst_volume:,.0f} shares")
+        lines.append(f"⚡ 5-minute volume rate: {burst_multiple:.1f}× typical 5-minute volume")
     lines += [
         f"🔔 Trigger: {', '.join(tags)}",
         f"⏰ {now:%Y-%m-%d %H:%M} NPT",
@@ -223,6 +237,7 @@ def main():
             today_text = today.isoformat()
             state = load_state(today_text)
             alerted = set(state["alerted"])
+            alerted_symbols = set(state["alerted_symbols"])
 
             if cached_date != today_text:
                 print("Loading 20-session average volume for filtered stocks...")
@@ -265,29 +280,40 @@ def main():
                 delta = max(0.0, volume - previous_volume) if previous_volume is not None else None
                 last_volume[symbol] = volume
 
+                # A burst means this scan interval's volume is at least 20x
+                # the stock's typical 5-minute share volume, estimated from
+                # its 20-session average daily volume and ~48 market intervals.
+                expected_5min_volume = average / EXPECTED_SCANS_PER_DAY
+                burst_multiple = (delta / expected_5min_volume
+                                 if delta is not None and expected_5min_volume > 0
+                                 else None)
+
+                # One Telegram alert per symbol per trading day. If both rules
+                # qualify in the same scan, combine them in one message.
+                if symbol in alerted_symbols:
+                    continue
+
                 tags = []
-                trigger_keys = []
-                daily_key = f"{today_text}:{symbol}:daily-spike"
-                burst_key = f"{today_text}:{symbol}:volume-burst"
-                if ratio >= DAILY_SPIKE_MULTIPLE and daily_key not in alerted:
-                    tags.append(f"Daily volume ≥ {DAILY_SPIKE_MULTIPLE:.1f}× average")
-                    trigger_keys.append(daily_key)
-                if (delta is not None and delta >= average * BURST_AVG_FRACTION
-                        and burst_key not in alerted):
-                    tags.append(f"5-minute volume burst ≥ {BURST_AVG_FRACTION:.0%} of average daily volume")
-                    trigger_keys.append(burst_key)
+                if ratio > DAILY_SPIKE_MULTIPLE:
+                    tags.append(f"Today's volume EXCEEDS {DAILY_SPIKE_MULTIPLE:.1f}× 20-session average")
+                if burst_multiple is not None and burst_multiple >= BURST_MULTIPLE:
+                    tags.append(f"Sudden 5-minute volume spike ≥ {BURST_MULTIPLE:.0f}× normal 5-minute volume")
                 if not tags:
                     continue
 
                 name = str(stock.get("name") or symbol)
-                message = format_alert(symbol, name, price, volume, average, ratio, delta, tags)
+                message = format_alert(
+                    symbol, name, price, volume, average, ratio, delta,
+                    burst_multiple, tags
+                )
                 try:
                     send_telegram(message)
-                    alerted.update(trigger_keys)
+                    alerted_symbols.add(symbol)
+                    state["alerted_symbols"] = sorted(alerted_symbols)
                     state["alerted"] = sorted(alerted)
                     save_state_and_push(state)
                     sent += 1
-                    print(f"Volume alert sent: {symbol} | {', '.join(tags)}")
+                    print(f"Volume alert sent ONCE today: {symbol} | {', '.join(tags)}")
                 except Exception as exc:
                     print(f"Alert failed for {symbol}: {exc}")
 
