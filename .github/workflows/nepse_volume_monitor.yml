@@ -1,1 +1,44 @@
+name: NEPSE Volume Alert Scanner
 
+'on':
+  workflow_dispatch:
+  schedule:
+    # 11:00 AM Nepal time (05:15 UTC), weekdays
+    - cron: '15 5 * * 1-5'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nepse-volume-monitor
+  cancel-in-progress: false
+
+jobs:
+  volume-scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run volume scanner
+        env:
+          VOLUME_TELEGRAM_BOT_TOKEN: ${{ secrets.VOLUME_TELEGRAM_BOT_TOKEN }}
+          VOLUME_TELEGRAM_CHAT_ID: ${{ secrets.VOLUME_TELEGRAM_CHAT_ID }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: python -u volume_scanner.py
